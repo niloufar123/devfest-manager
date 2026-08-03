@@ -16,23 +16,36 @@ import { EventService } from '../../core/event.service';
 
 
     <!-- TODO Mod 2: Wrap in @if (events.isLoading()) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- @if (events.error()) {
+<div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+  Failed to load events. Is the server running?
+</div>
+}
+
+@if (events.isLoading()) {
+<div class="text-center py-12 text-gray-500 animate-pulse">Loading events...</div>
+} -->
+    @if(events.hasValue()){
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for(event of events.value(); track event.id){
+
+      <app-event-card
+       [title]="event.title"
+       [image]="event.image"
+       [date]="event.date"
+      />
+      }
+    </div>
+      }
       <!-- TODO Mod 2: Use @for to iterate over resource -->
 
       <!-- Static Placeholders for initial verify -->
-      <app-event-card title="Angular keynote"
-       image="/images/angular-keynote.png"
-       date="2025-12-10T09:00:00.000Z"
-      (delete)="console.log('remove is clicked')"
-      />
-      <app-event-card  title="Signals Deep Dive" image="/images/signals-deep-dive.png"/>
-    </div>
   `,
 })
 export class EventList {
   readonly console=console
   readonly eventsService=inject(EventService )
-  searchQuery=signal('sf')
+  searchQuery=signal('')
 
   readonly events=this.eventsService.getEventResource(this.searchQuery)
   // TODO Mod 2: Inject Service and use resource()
