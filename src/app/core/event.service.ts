@@ -1,5 +1,5 @@
-import { httpResource } from "@angular/common/http";
-import { Injectable, Signal } from "@angular/core";
+import { HttpClient, httpResource } from "@angular/common/http";
+import { inject, Injectable, Signal } from "@angular/core";
 import { DevFestEvent } from "../models/event.model";
 
 @Injectable({
@@ -7,13 +7,29 @@ import { DevFestEvent } from "../models/event.model";
 })
 export class EventService{
     private apiUrl='http://localhost:3000/events'
+    private readonly http=inject(HttpClient)
 
-    getEventResource(query:Signal<string>){
+    getEventsResource(query:Signal<string>){
       return httpResource<DevFestEvent[]>(()=>{
         const q=query();
 
         return q? `${this.apiUrl}?q=${q}` : this.apiUrl
       })
+    }
+
+    getEventResource(id:Signal<string>){
+      return httpResource<DevFestEvent>(()=>{
+        if (!id()) return undefined;
+
+        return `${this.apiUrl}/${id()}`
+      })
+
+    }
+
+
+
+    deleteEvent(id:string){
+        return this.http.delete<void>(`${this.apiUrl}/${id}`)
     }
 
 

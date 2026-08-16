@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { EventCard } from './event-card';
-import { SearchBar } from "./search-bar";
+import { SearchBar } from './search-bar';
 import { EventService } from '../../core/event.service';
 
 @Component({
@@ -9,44 +9,57 @@ import { EventService } from '../../core/event.service';
   template: `
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-4">Upcoming Events</h1>
-      <app-search-bar [(query)]='searchQuery'></app-search-bar>
+      <app-search-bar [(query)]="searchQuery"></app-search-bar>
       <!-- TODO Mod 1: Add SearchBar here -->
     </div>
-    <p>Searching for: {{searchQuery()}} </p>
-
+    <p>Searching for: {{ searchQuery() }}</p>
 
     <!-- TODO Mod 2: Wrap in @if (events.isLoading()) -->
-    <!-- @if (events.error()) {
-<div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
-  Failed to load events. Is the server running?
-</div>
-}
+    @if (events.error()) {
+      <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+        Failed to load events. Is the server running?
+      </div>
+    }
 
-@if (events.isLoading()) {
-<div class="text-center py-12 text-gray-500 animate-pulse">Loading events...</div>
-} -->
-    @if(events.hasValue()){
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for(event of events.value(); track event.id){
+    @if (events.isLoading()) {
+      <div class="text-center py-12 text-gray-500 animate-pulse">Loading events...</div>
+    }
+    @if (events.hasValue()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (event of events.value(); track event.id) {
+          <app-event-card
+          [id]="event.id"
+           [title]="event.title"
+          [image]="event.image"
+           [date]="event.date"
+           (delete)="deleteEvent(event.id)"
 
-      <app-event-card
-       [title]="event.title"
-       [image]="event.image"
-       [date]="event.date"
-      />
-      }
-    </div>
-      }
-      <!-- TODO Mod 2: Use @for to iterate over resource -->
+           />
+        }
+      </div>
+    }
+    <!-- TODO Mod 2: Use @for to iterate over resource -->
 
-      <!-- Static Placeholders for initial verify -->
+    <!-- Static Placeholders for initial verify -->
   `,
 })
 export class EventList {
-  readonly console=console
-  readonly eventsService=inject(EventService )
-  searchQuery=signal('')
+  readonly console = console;
+  readonly eventsService = inject(EventService);
+  searchQuery = signal('');
 
-  readonly events=this.eventsService.getEventResource(this.searchQuery)
+  readonly events = this.eventsService.getEventsResource(this.searchQuery);
   // TODO Mod 2: Inject Service and use resource()
+
+  deleteEvent(id:string){
+    this.eventsService.deleteEvent(id).subscribe({
+      next:()=>{
+        this.events.reload()
+      },
+      error(err){
+        alert('could not delete the event')
+      }
+    });
+
+  }
 }

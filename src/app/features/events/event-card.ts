@@ -1,9 +1,10 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-event-card',
-  imports:[DatePipe,CurrencyPipe],
+  imports:[DatePipe,CurrencyPipe,RouterLink],
   template: `
     <div
       class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -62,7 +63,7 @@ import { Component, computed, input, linkedSignal, output, signal } from '@angul
         </div>
 
         <div class="mt-4 pt-4 border-t border-gray-100 text-right">
-          <a class="text-blue-600 font-medium hover:underline cursor-pointer"> View Details → </a>
+          <a [routerLink]="['/event',this.id()]"  class="text-blue-600 font-medium hover:underline cursor-pointer"> View Details → </a>
         </div>
       </div>
     </div>
@@ -72,6 +73,7 @@ export class EventCard {
   // TODO Mod 1: Implement input(), output(), and model()
   title = input.required<string>();
   image = input.required<string>();
+  id=input.required<string>()
   date = input<string>();
   initialLiked=input(false)
   delete=output<void>()

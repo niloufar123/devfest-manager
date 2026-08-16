@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { DevFestEvent } from '../../models/event.model';
+import { form, FormField, required, minLength, disabled, debounce } from '@angular/forms/signals';
+interface CreateEventForm extends Omit<DevFestEvent,'id'>{}
 
 @Component({
   selector: 'app-create-event',
-  template: `
+  imports: [FormField],
+    template: `
     <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
       <h2 class="text-2xl font-bold mb-6 text-gray-800">Create New Event</h2>
 
@@ -12,10 +16,14 @@ import { Component } from '@angular/core';
           <label class="block text-sm font-medium text-gray-700 mb-1">Event Title</label>
           <!-- TODO Mod 4: Bind [control] -->
           <input
-            type="text"
-            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-            placeholder="e.g. Angular Workshop"
-          />
+        [formField]="form.title"
+        type="text"
+        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="e.g. Angular Workshop"
+      />
+           @if (form.title().touched() && form.title().invalid()) {
+      <p class="text-red-500 text-sm mt-1">{{ form.title().errors()[0].message }}</p>
+      }
         </div>
 
         <div>
@@ -40,4 +48,18 @@ import { Component } from '@angular/core';
 })
 export class CreateEvent {
   // TODO Mod 4: form = form(...)
+  readonly eventData=signal<CreateEventForm>({
+    title:'',
+    description:'',
+    date:new Date().toISOString().slice(0,16),
+    location:'',
+    speakers:[],
+    image:'/image/event4.png'
+  })
+
+  readonly form=form(this.eventData,(root)=>{
+    required(root.title,{message:'title is required'})
+  })
+
+
 }
