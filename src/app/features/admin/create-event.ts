@@ -1,7 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { DevFestEvent } from '../../models/event.model';
 import { form, FormField, required, minLength, disabled, debounce } from '@angular/forms/signals';
 import { FormSubmittedEvent } from '@angular/forms';
+import { EventService } from '../../core/event.service';
+import { Router } from '@angular/router';
 interface CreateEventForm extends Omit<DevFestEvent,'id'>{}
 
 @Component({
@@ -66,6 +68,32 @@ interface CreateEventForm extends Omit<DevFestEvent,'id'>{}
 
     <!-- (Speakers Array Next) -->
 
+    <div class="border-t border-gray-100 pt-4">
+  <div class="flex justify-between items-center mb-2">
+    <label class="block text-sm font-medium text-gray-700">Speakers</label>
+    <button type="button" (click)="addSpeaker()" class="text-sm text-blue-600 hover:underline">
+      + Add Speaker
+    </button>
+  </div>
+
+  <div class="space-y-2">
+    <!-- Iterate over the SOURCE data to get the index -->
+    @for (speaker of eventData().speakers; track $index) {
+    <div class="flex gap-2">
+      <!-- Bind to form.speakers[index] -->
+      <input
+        [formField]="form.speakers[$index]"
+        type="text"
+        placeholder="Speaker Name"
+        class="flex-1 px-4 py-2 border rounded-md"
+      />
+
+      <button type="button" (click)="removeSpeaker($index)" class="text-red-500 px-2">✕</button>
+    </div>
+    }
+  </div>
+</div>
+
     <!-- Actions -->
     <div class="flex justify-end gap-4 pt-4">
       <button type="button" class="px-4 py-2 text-gray-600">Cancel</button>
@@ -85,6 +113,11 @@ interface CreateEventForm extends Omit<DevFestEvent,'id'>{}
 })
 export class CreateEvent {
   // TODO Mod 4: form = form(...)
+
+  readonly eventService=inject(EventService)
+
+  readonly router=inject(Router)
+
   readonly eventData=signal<CreateEventForm>({
     title:'',
     description:'',
@@ -106,7 +139,41 @@ export class CreateEvent {
 
 
   })
+
+  addSpeaker(){
+    this.eventData.update(current=>{
+      return{
+
+        ...current,
+        speakers:[...current.speakers,'']
+      }
+
+    })
+  }
+
+  removeSpeaker(index:number){
+    this.eventData.update(current=>(
+     { ...current,
+      speakers:current.speakers.filter((_,i)=>i!=index)
+     }
+    ))
+
+
+  }
   onSubmit(event:SubmitEvent){
+    event.preventDefault()
+    if(this.form().invalid()) { return }
+
+
+    const payload=this.eventData();
+
+    this.eventService.createEvent(payload).subscribe({
+      next:()=>{
+        alert('event created successfully!')
+        this.router.navigate(['/'])
+      },
+      error:(e)=>console.error(e)
+    })
 
 
 

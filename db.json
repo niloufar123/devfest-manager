@@ -11,6 +11,35 @@
         "Alex Rickabaugh",
         "Pawel Kozlowski"
       ]
+    },
+    {
+      "title": "sdfsf",
+      "description": "sdfsdfsdfsfsdfsdf ",
+      "date": "2026-08-19T04:44",
+      "location": "qwqes",
+      "speakers": [
+        "sdf"
+      ],
+      "image": "/image/event4.png",
+      "id": "R9YkA6D"
+    },
+    {
+      "title": "etrertetr",
+      "description": "ertertet ertertetr",
+      "date": "2026-08-19T04:45",
+      "location": "ertertert",
+      "speakers": [],
+      "image": "/image/event4.png",
+      "id": "Dbd0-vH"
+    },
+    {
+      "title": "etrertetr",
+      "description": "ertertet ertertetr",
+      "date": "2026-08-19T04:45",
+      "location": "ertertert",
+      "speakers": [],
+      "image": "/image/event4.png",
+      "id": "PPmdAnp"
     }
   ],
   "tickets": []
