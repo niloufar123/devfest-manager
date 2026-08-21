@@ -42,5 +42,30 @@
       "id": "PPmdAnp"
     }
   ],
-  "tickets": []
+  "tickets": [
+    {
+      "eventId": "2",
+      "id": 1
+    },
+    {
+      "eventId": "2",
+      "id": 2
+    },
+    {
+      "eventId": "2",
+      "id": 3
+    },
+    {
+      "eventId": "2",
+      "id": 4
+    },
+    {
+      "eventId": "2",
+      "id": 5
+    },
+    {
+      "eventId": "2",
+      "id": 6
+    }
+  ]
 }
